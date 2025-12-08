@@ -23,7 +23,8 @@ export default function AddOrderDialog({ isOpen, onClose, onSubmit }: AddOrderDi
     onSubmit({
       title: formJson.title,
       code: Number(formJson.code),
-      dueDate: new Date(formJson.dueDate as string),
+      dueDate: formJson.dueDate === "" ? null : new Date(formJson.dueDate as string),
+      quantity: Number(formJson.quantity),
     } as OrderModel);
     onClose();
   };
@@ -53,6 +54,14 @@ export default function AddOrderDialog({ isOpen, onClose, onSubmit }: AddOrderDi
           />
           <TextField
             required
+            margin="dense"
+            name="quantity"
+            label="Кількість в комплекті"
+            type="number"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
             margin="dense"
             name="dueDate"
             label="Відправити до"

@@ -1,12 +1,23 @@
 import { Box, Button, List, ListItem, ListItemText, TextField, Typography } from "@mui/material";
-import PrintingReport from "./PrintingReport";
+import { useLiveQuery } from "dexie-react-hooks";
 import { useState } from "react";
+import { db } from "../../db";
 import AddOrderDialog from "./AddOrderDialog";
+import OrderModel from "./models/orderModel";
+import PrintingReport from "./PrintingReport";
 
 export default function MainPage() {
   const [isOpenAddOrderDialog, setIsOpenAddOrderDialog] = useState(false);
 
-  const items = Array.from({ length: 30 }, (_, i) => `Item ${i + 1}`);
+  const orders = useLiveQuery(() => db.orders.toArray(), []) ?? [];
+
+  const handleAddNewOrder = async (order: OrderModel) => {
+    try {
+      await db.orders.add(order);
+    } catch (error) {
+      console.error(`Failed to add ${order.title} ${order.code} `, error);
+    }
+  };
 
   return (
     <>
@@ -30,14 +41,13 @@ export default function MainPage() {
         </Box>
 
         <Box p={1}>
-          {/*Поки без пошуку*/}
           <TextField size="small" variant="outlined" fullWidth />
         </Box>
         <Box overflow="auto">
           <List>
-            {items.map((item, index) => (
-              <ListItem key={index} divider>
-                <ListItemText primary={item} />
+            {orders.map((order) => (
+              <ListItem key={order.id} divider>
+                <ListItemText primary={order.title} />
               </ListItem>
             ))}
           </List>
@@ -46,7 +56,7 @@ export default function MainPage() {
       <AddOrderDialog
         isOpen={isOpenAddOrderDialog}
         onClose={() => setIsOpenAddOrderDialog(false)}
-        onSubmit={(newOrder) => console.log("qwe", newOrder)}
+        onSubmit={handleAddNewOrder}
       />
     </>
   );
