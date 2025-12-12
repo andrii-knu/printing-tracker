@@ -6,8 +6,9 @@ import { useParams } from "react-router-dom";
 import PageTemplate from "../../components/PageTemplate";
 import { db } from "../../db";
 import type PartModel from "../../models/part.model";
-import AddPartDialog from "./elements/AddPartDialog";
 import OrderInfo from "./elements/OrderInfo";
+import AddDialog from "../../components/AddDialog";
+import AddPartForm from "./elements/AddPartForm";
 
 export default function OrderPage() {
   const [isOpenAddPartDialog, setIsOpenAddPartDialog] = useState(false);
@@ -18,11 +19,16 @@ export default function OrderPage() {
 
   if (order === undefined) return "Order not found";
 
-  const handleAddPart = async (part: PartModel) => {
+  const handleAddNewPart = async (formJson: { [k: string]: FormDataEntryValue }) => {
+    const newPart = {
+      title: formJson.title,
+      quantity: Number(formJson.quantity),
+      printed: 0,
+      orderId: order.id,
+    } as PartModel;
+
     try {
-      part.orderId = order.id;
-      part.printed = 0;
-      await db.parts.add(part);
+      await db.parts.add(newPart);
     } catch (error) {
       console.error("Failde to add part to order with id: ", order_id, error);
     }
@@ -54,11 +60,15 @@ export default function OrderPage() {
           </List>
         </Box>
       </PageTemplate>
-      <AddPartDialog
+
+      <AddDialog
+        title="Додати деталь до замовлення"
         isOpen={isOpenAddPartDialog}
         onClose={() => setIsOpenAddPartDialog(false)}
-        onSubmit={(part) => handleAddPart(part)}
-      />
+        onSubmit={handleAddNewPart}
+      >
+        <AddPartForm />
+      </AddDialog>
     </>
   );
 }

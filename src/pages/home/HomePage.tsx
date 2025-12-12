@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import PageTemplate from "../../components/PageTemplate";
 import { db } from "../../db";
 import type OrderModel from "../../models/order.model";
-import AddOrderDialog from "./elements/AddOrderDialog";
+import AddDialog from "../../components/AddDialog";
+import AddOrderForm from "./elements/AddOrderForm";
 import PrintingReport from "./elements/PrintingReport";
 
 export default function HomePage() {
@@ -14,11 +15,18 @@ export default function HomePage() {
   const orders = useLiveQuery(() => db.orders.toArray(), []) ?? [];
   const navigate = useNavigate();
 
-  const handleAddNewOrder = async (order: OrderModel) => {
+  const handleAddNewOrder = async (formJson: { [k: string]: FormDataEntryValue }) => {
+    const newOrder = {
+      title: formJson.title,
+      code: Number(formJson.code),
+      dueDate: formJson.dueDate === "" ? null : new Date(formJson.dueDate as string),
+      quantity: Number(formJson.quantity),
+    } as OrderModel;
+
     try {
-      await db.orders.add(order);
+      await db.orders.add(newOrder);
     } catch (error) {
-      console.error(`Failed to add ${order.title} ${order.code} `, error);
+      console.error(`Failed to add ${newOrder.title} ${newOrder.code} `, error);
     }
   };
 
@@ -59,11 +67,14 @@ export default function HomePage() {
         </Box>
       </PageTemplate>
 
-      <AddOrderDialog
+      <AddDialog
+        title="Додати нове замовлення"
         isOpen={isOpenAddOrderDialog}
         onClose={() => setIsOpenAddOrderDialog(false)}
         onSubmit={handleAddNewOrder}
-      />
+      >
+        <AddOrderForm />
+      </AddDialog>
     </>
   );
 }
