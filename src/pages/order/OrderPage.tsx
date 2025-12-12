@@ -1,5 +1,4 @@
-import AddIcon from "@mui/icons-material/Add";
-import { Box, Button, List, ListItem, ListItemText } from "@mui/material";
+import { Box, List, ListItem, ListItemText } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,6 +8,7 @@ import type PartModel from "../../models/part.model";
 import OrderInfo from "./elements/OrderInfo";
 import AddDialog from "../../components/AddDialog";
 import AddPartForm from "./elements/AddPartForm";
+import AddButton from "../../components/AddButton";
 
 export default function OrderPage() {
   const [isOpenAddPartDialog, setIsOpenAddPartDialog] = useState(false);
@@ -38,27 +38,19 @@ export default function OrderPage() {
     <>
       <PageTemplate
         title={`${order?.title}`}
-        headerControls={
-          <Button
-            color="inherit"
-            variant="outlined"
-            onClick={() => setIsOpenAddPartDialog(true)}
-            startIcon={<AddIcon />}
-          >
-            Деталь
-          </Button>
+        topChildren={<Box>{order && <OrderInfo order={order} />}</Box>}
+        childrenTitle="Деталі"
+        childrenControls={
+          <AddButton OnClick={() => setIsOpenAddPartDialog(true)}>Деталь</AddButton>
         }
       >
-        <Box>{order && <OrderInfo order={order} />}</Box>
-        <Box overflow="auto">
-          <List>
-            {parts.map((part) => (
-              <ListItem key={part.id} divider>
-                <ListItemText primary={part.title} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        <List>
+          {parts.map((part) => (
+            <ListItem key={part.id} divider>
+              <ListItemText primary={part.title} />
+            </ListItem>
+          ))}
+        </List>
       </PageTemplate>
 
       <AddDialog

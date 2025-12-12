@@ -1,14 +1,14 @@
-import AddIcon from "@mui/icons-material/Add";
-import { Box, Button, List, ListItem, ListItemText, TextField } from "@mui/material";
+import { Box, List, ListItem, ListItemText } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddDialog from "../../components/AddDialog";
 import PageTemplate from "../../components/PageTemplate";
 import { db } from "../../db";
 import type OrderModel from "../../models/order.model";
-import AddDialog from "../../components/AddDialog";
 import AddOrderForm from "./elements/AddOrderForm";
 import PrintingReport from "./elements/PrintingReport";
+import AddButton from "../../components/AddButton";
 
 export default function HomePage() {
   const [isOpenAddOrderDialog, setIsOpenAddOrderDialog] = useState(false);
@@ -34,37 +34,27 @@ export default function HomePage() {
     <>
       <PageTemplate
         title="Printing Tracker"
-        headerControls={
-          <Button
-            color="inherit"
-            variant="outlined"
-            onClick={() => setIsOpenAddOrderDialog(true)}
-            startIcon={<AddIcon />}
-          >
-            Замовлення
-          </Button>
+        topChildren={
+          <Box p={2} bgcolor="#f5f5f5">
+            <PrintingReport />
+          </Box>
+        }
+        childrenTitle="Мої замовлення"
+        childrenControls={
+          <AddButton OnClick={() => setIsOpenAddOrderDialog(true)}>Замовлення</AddButton>
         }
       >
-        <Box p={2} bgcolor="#f5f5f5">
-          <PrintingReport />
-        </Box>
-
-        <Box p={1}>
-          <TextField size="small" variant="outlined" fullWidth />
-        </Box>
-        <Box overflow="auto">
-          <List>
-            {orders.map((order) => (
-              <ListItem
-                key={order.id}
-                divider
-                onClick={() => navigate("/printing-tracker/order/" + order.id)}
-              >
-                <ListItemText primary={order.title} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        <List>
+          {orders.map((order) => (
+            <ListItem
+              key={order.id}
+              divider
+              onClick={() => navigate("/printing-tracker/order/" + order.id)}
+            >
+              <ListItemText primary={order.title} />
+            </ListItem>
+          ))}
+        </List>
       </PageTemplate>
 
       <AddDialog
