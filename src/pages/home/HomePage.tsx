@@ -1,15 +1,18 @@
-import { Box, Button, List, ListItem, ListItemText, TextField, Typography } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { Box, Button, List, ListItem, ListItemText, TextField } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PageTemplate from "../../components/PageTemplate";
 import { db } from "../../db";
-import AddOrderDialog from "./AddOrderDialog";
-import OrderModel from "./models/orderModel";
-import PrintingReport from "./PrintingReport";
+import type OrderModel from "../../models/order.model";
+import AddOrderDialog from "./elements/AddOrderDialog";
+import PrintingReport from "./elements/PrintingReport";
 
-export default function MainPage() {
+export default function HomePage() {
   const [isOpenAddOrderDialog, setIsOpenAddOrderDialog] = useState(false);
-
   const orders = useLiveQuery(() => db.orders.toArray(), []) ?? [];
+  const navigate = useNavigate();
 
   const handleAddNewOrder = async (order: OrderModel) => {
     try {
@@ -21,21 +24,19 @@ export default function MainPage() {
 
   return (
     <>
-      <Box display="flex" flexDirection="column" height="100vh">
-        <Box
-          p={2}
-          bgcolor="primary.main"
-          color="white"
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Typography variant="h6">Printing Tracker</Typography>
-          <Button color="inherit" onClick={() => setIsOpenAddOrderDialog(true)}>
-            + Замовлення
+      <PageTemplate
+        title="Printing Tracker"
+        headerControls={
+          <Button
+            color="inherit"
+            variant="outlined"
+            onClick={() => setIsOpenAddOrderDialog(true)}
+            startIcon={<AddIcon />}
+          >
+            Замовлення
           </Button>
-        </Box>
-
+        }
+      >
         <Box p={2} bgcolor="#f5f5f5">
           <PrintingReport />
         </Box>
@@ -46,13 +47,18 @@ export default function MainPage() {
         <Box overflow="auto">
           <List>
             {orders.map((order) => (
-              <ListItem key={order.id} divider>
+              <ListItem
+                key={order.id}
+                divider
+                onClick={() => navigate("/printing-tracker/order/" + order.id)}
+              >
                 <ListItemText primary={order.title} />
               </ListItem>
             ))}
           </List>
         </Box>
-      </Box>
+      </PageTemplate>
+
       <AddOrderDialog
         isOpen={isOpenAddOrderDialog}
         onClose={() => setIsOpenAddOrderDialog(false)}

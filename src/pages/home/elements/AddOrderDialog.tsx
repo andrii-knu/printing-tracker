@@ -6,7 +6,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import type OrderModel from "./models/orderModel";
+import type OrderModel from "../../../models/order.model";
 
 type AddOrderDialogProps = {
   isOpen: boolean;
