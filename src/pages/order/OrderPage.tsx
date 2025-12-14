@@ -1,17 +1,22 @@
-import { Box, List, ListItem, ListItemText } from "@mui/material";
+import { Box, List } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import AddButton from "../../components/AddButton";
+import AddDialog from "../../components/AddDialog";
 import PageTemplate from "../../components/PageTemplate";
 import { db } from "../../db";
-import type PartModel from "../../models/part.model";
-import OrderInfo from "./elements/OrderInfo";
-import AddDialog from "../../components/AddDialog";
+import PartModel from "../../models/part.model";
+import type RecordModel from "../../models/record.model";
 import AddPartForm from "./elements/AddPartForm";
-import AddButton from "../../components/AddButton";
+import AddRecordForm from "./elements/AddRecordForm";
+import OrderInfo from "./elements/OrderInfo";
+import PartListItem from "./elements/PartListItem";
 
 export default function OrderPage() {
   const [isOpenAddPartDialog, setIsOpenAddPartDialog] = useState(false);
+  const [isOpenAddRecordDialog, setIsOpenAddRecordDialog] = useState(false);
+  const selectedPartRef = useRef<PartModel>(null);
   const { order_id } = useParams();
   const order = useLiveQuery(() => db.orders.get(Number(order_id)));
   const parts =
@@ -23,7 +28,6 @@ export default function OrderPage() {
     const newPart = {
       title: formJson.title,
       quantity: Number(formJson.quantity),
-      printed: 0,
       orderId: order.id,
     } as PartModel;
 
@@ -31,6 +35,20 @@ export default function OrderPage() {
       await db.parts.add(newPart);
     } catch (error) {
       console.error("Failde to add part to order with id: ", order_id, error);
+    }
+  };
+
+  const handleAddNewRecord = async (formJson: { [k: string]: FormDataEntryValue }) => {
+    const newRecord = {
+      printed: Number(formJson.printed),
+      date: new Date(),
+      partId: selectedPartRef.current?.id,
+    } as RecordModel;
+
+    try {
+      await db.records.add(newRecord);
+    } catch (error) {
+      console.error("Failed to add a record", error);
     }
   };
 
@@ -46,9 +64,14 @@ export default function OrderPage() {
       >
         <List>
           {parts.map((part) => (
-            <ListItem key={part.id} divider>
-              <ListItemText primary={part.title} />
-            </ListItem>
+            <PartListItem
+              key={part.id}
+              part={part}
+              OnAddClick={() => {
+                selectedPartRef.current = part;
+                setIsOpenAddRecordDialog(true);
+              }}
+            />
           ))}
         </List>
       </PageTemplate>
@@ -60,6 +83,15 @@ export default function OrderPage() {
         onSubmit={handleAddNewPart}
       >
         <AddPartForm />
+      </AddDialog>
+
+      <AddDialog
+        title="Додати запис"
+        isOpen={isOpenAddRecordDialog}
+        onClose={() => setIsOpenAddRecordDialog(false)}
+        onSubmit={handleAddNewRecord}
+      >
+        <AddRecordForm />
       </AddDialog>
     </>
   );
