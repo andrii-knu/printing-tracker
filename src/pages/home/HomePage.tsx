@@ -1,7 +1,6 @@
-import { Box, List, ListItem, ListItemText } from "@mui/material";
+import { Box, List } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AddDialog from "../../components/AddDialog";
 import PageTemplate from "../../components/PageTemplate";
 import { db } from "../../db";
@@ -9,11 +8,11 @@ import type OrderModel from "../../models/order.model";
 import AddOrderForm from "./elements/AddOrderForm";
 import PrintingReport from "./elements/PrintingReport";
 import AddButton from "../../components/AddButton";
+import OrderListItem from "./elements/OrderListItem";
 
 export default function HomePage() {
   const [isOpenAddOrderDialog, setIsOpenAddOrderDialog] = useState(false);
   const orders = useLiveQuery(() => db.orders.toArray(), []) ?? [];
-  const navigate = useNavigate();
 
   const handleAddNewOrder = async (formJson: { [k: string]: FormDataEntryValue }) => {
     const newOrder = {
@@ -46,13 +45,7 @@ export default function HomePage() {
       >
         <List>
           {orders.map((order) => (
-            <ListItem
-              key={order.id}
-              divider
-              onClick={() => navigate("/printing-tracker/order/" + order.id)}
-            >
-              <ListItemText primary={order.title} />
-            </ListItem>
+            <OrderListItem key={order.id} order={order} />
           ))}
         </List>
       </PageTemplate>

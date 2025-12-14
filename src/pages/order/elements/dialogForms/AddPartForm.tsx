@@ -1,6 +1,10 @@
 import { TextField } from "@mui/material";
 
-export default function AddPartForm() {
+type AddPartFormProps = {
+  defaultQuantity: number;
+};
+
+export default function AddPartForm({ defaultQuantity }: AddPartFormProps) {
   return (
     <>
       <TextField
@@ -17,6 +21,7 @@ export default function AddPartForm() {
         margin="dense"
         name="quantity"
         label="Кількість"
+        value={defaultQuantity}
         type="number"
         fullWidth
         variant="standard"

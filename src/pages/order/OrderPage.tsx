@@ -8,8 +8,8 @@ import PageTemplate from "../../components/PageTemplate";
 import { db } from "../../db";
 import PartModel from "../../models/part.model";
 import type RecordModel from "../../models/record.model";
-import AddPartForm from "./elements/AddPartForm";
-import AddRecordForm from "./elements/AddRecordForm";
+import AddPartForm from "./elements/dialogForms/AddPartForm";
+import AddRecordForm from "./elements/dialogForms/AddRecordForm";
 import OrderInfo from "./elements/OrderInfo";
 import PartListItem from "./elements/PartListItem";
 
@@ -82,7 +82,7 @@ export default function OrderPage() {
         onClose={() => setIsOpenAddPartDialog(false)}
         onSubmit={handleAddNewPart}
       >
-        <AddPartForm />
+        <AddPartForm defaultQuantity={order.quantity} />
       </AddDialog>
 
       <AddDialog
