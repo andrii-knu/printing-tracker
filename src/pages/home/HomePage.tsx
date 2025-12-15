@@ -1,4 +1,4 @@
-import { Box, List } from "@mui/material";
+import { List } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useState } from "react";
 import AddDialog from "../../components/AddDialog";
@@ -6,7 +6,6 @@ import PageTemplate from "../../components/PageTemplate";
 import { db } from "../../db";
 import type OrderModel from "../../models/order.model";
 import AddOrderForm from "./elements/AddOrderForm";
-import PrintingReport from "./elements/PrintingReport";
 import AddButton from "../../components/AddButton";
 import OrderListItem from "./elements/OrderListItem";
 
@@ -33,11 +32,6 @@ export default function HomePage() {
     <>
       <PageTemplate
         title="Printing Tracker"
-        topChildren={
-          <Box p={2} bgcolor="#f5f5f5">
-            <PrintingReport />
-          </Box>
-        }
         childrenTitle="Мої замовлення"
         childrenControls={
           <AddButton OnClick={() => setIsOpenAddOrderDialog(true)}>Замовлення</AddButton>

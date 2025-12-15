@@ -1,4 +1,4 @@
-import { Box, List } from "@mui/material";
+import { List } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -10,7 +10,6 @@ import PartModel from "../../models/part.model";
 import type RecordModel from "../../models/record.model";
 import AddPartForm from "./elements/dialogForms/AddPartForm";
 import AddRecordForm from "./elements/dialogForms/AddRecordForm";
-import OrderInfo from "./elements/OrderInfo";
 import PartListItem from "./elements/PartListItem";
 
 export default function OrderPage() {
@@ -55,8 +54,11 @@ export default function OrderPage() {
   return (
     <>
       <PageTemplate
-        title={`${order?.title}`}
-        topChildren={<Box>{order && <OrderInfo order={order} />}</Box>}
+        title={
+          order.dueDate instanceof Date
+            ? `${order.title} | Виконати до ${order.dueDate.toLocaleDateString()}`
+            : order.title
+        }
         childrenTitle="Деталі"
         childrenControls={
           <AddButton OnClick={() => setIsOpenAddPartDialog(true)}>Деталь</AddButton>
