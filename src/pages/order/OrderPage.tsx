@@ -11,10 +11,16 @@ import type RecordModel from "../../models/record.model";
 import AddPartForm from "./elements/dialogForms/AddPartForm";
 import AddRecordForm from "./elements/dialogForms/AddRecordForm";
 import PartListItem from "./elements/PartListItem";
+import HistoryDialog from "./elements/HistoryDialog";
 
 export default function OrderPage() {
   const [isOpenAddPartDialog, setIsOpenAddPartDialog] = useState(false);
   const [isOpenAddRecordDialog, setIsOpenAddRecordDialog] = useState(false);
+  const [historyDialogState, setHistoryDialogState] = useState<{
+    isOpen: boolean;
+    part: PartModel | null;
+  }>({ isOpen: false, part: null });
+
   const selectedPartRef = useRef<PartModel>(null);
   const { order_id } = useParams();
   const order = useLiveQuery(() => db.orders.get(Number(order_id)));
@@ -73,6 +79,9 @@ export default function OrderPage() {
                 selectedPartRef.current = part;
                 setIsOpenAddRecordDialog(true);
               }}
+              OnShowHistoryClick={() => {
+                setHistoryDialogState({ isOpen: true, part: part });
+              }}
             />
           ))}
         </List>
@@ -95,6 +104,12 @@ export default function OrderPage() {
       >
         <AddRecordForm />
       </AddDialog>
+
+      <HistoryDialog
+        isOpen={historyDialogState.isOpen}
+        onClose={() => setHistoryDialogState((prev) => ({ ...prev, isOpen: false }))}
+        part={historyDialogState.part}
+      />
     </>
   );
 }

@@ -31,7 +31,14 @@ export default function ProgressListItem({
   OnListItemClick,
 }: ProgressListItemProps) {
   return (
-    <ListItem divider secondaryAction={secondaryAction} onClick={OnListItemClick}>
+    <ListItem
+      divider
+      secondaryAction={secondaryAction}
+      onClick={OnListItemClick}
+      sx={{
+        "&:hover": { backgroundColor: "#f9f9f9" },
+      }}
+    >
       <ListItemIcon>{getProgressStatusIcon(progress)}</ListItemIcon>
       <ListItemText
         primary={<Primary headerNode={header} progress={progress} />}

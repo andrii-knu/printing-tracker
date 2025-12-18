@@ -44,7 +44,7 @@ function Header({ order, printingProgress }: { order: OrderModel; printingProgre
   return (
     <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center">
       <Typography variant="h6">{order.title}</Typography>
-      <Typography>{`${clamp(printingProgress, 0, 100)}%`}</Typography>
+      <Typography>{`${Math.round(clamp(printingProgress, 0, 100))}%`}</Typography>
     </Stack>
   );
 }

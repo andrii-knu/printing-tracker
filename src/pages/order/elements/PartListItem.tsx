@@ -10,9 +10,10 @@ import ProgressListItem from "../../../components/ProgressListItem";
 type PartListItemProps = {
   part: PartModel;
   OnAddClick?: () => void;
+  OnShowHistoryClick?: () => void;
 };
 
-export default function PartListItem({ part, OnAddClick }: PartListItemProps) {
+export default function PartListItem({ part, OnAddClick, OnShowHistoryClick }: PartListItemProps) {
   const records =
     useLiveQuery(() => db.records.where("partId").equals(part.id).toArray(), []) ?? [];
 
@@ -25,7 +26,7 @@ export default function PartListItem({ part, OnAddClick }: PartListItemProps) {
       footer={<AddButtonsBar OnAddClick={OnAddClick} />}
       progress={printingProgress}
       secondaryAction={
-        <IconButton edge="end">
+        <IconButton edge="end" onClick={OnShowHistoryClick}>
           <HistoryIcon />
         </IconButton>
       }
