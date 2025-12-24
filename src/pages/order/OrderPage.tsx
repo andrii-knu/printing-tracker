@@ -1,7 +1,7 @@
 import { List } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AddButton from "../../components/AddButton";
 import AddDialog from "../../components/AddDialog";
 import PageTemplate from "../../components/PageTemplate";
@@ -14,6 +14,7 @@ import PartListItem from "./elements/PartListItem";
 import HistoryDialog from "./elements/HistoryDialog";
 
 export default function OrderPage() {
+  const navigate = useNavigate();
   const [isOpenAddPartDialog, setIsOpenAddPartDialog] = useState(false);
   const [isOpenAddRecordDialog, setIsOpenAddRecordDialog] = useState(false);
   const [historyDialogState, setHistoryDialogState] = useState<{
@@ -69,6 +70,7 @@ export default function OrderPage() {
         childrenControls={
           <AddButton OnClick={() => setIsOpenAddPartDialog(true)}>Деталь</AddButton>
         }
+        onBack={() => navigate("/printing-tracker/")}
       >
         <List>
           {parts.map((part) => (

@@ -1,4 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import type { PropsWithChildren, ReactNode } from "react";
 
 type TemplateProps = {
@@ -6,6 +7,7 @@ type TemplateProps = {
   childrenTitle: string;
   topChildren?: ReactNode;
   childrenControls?: ReactNode;
+  onBack?: () => void;
 } & PropsWithChildren;
 
 export default function PageTemplate({
@@ -14,10 +16,16 @@ export default function PageTemplate({
   topChildren,
   childrenControls,
   children,
+  onBack,
 }: TemplateProps) {
   return (
     <Box display="flex" flexDirection="column" height="100vh">
-      <Box p={2} bgcolor="primary.main" color="white" display="flex">
+      <Box p={2} bgcolor="primary.main" color="white" display="flex" alignItems="center" gap={1}>
+        {onBack && (
+          <IconButton onClick={onBack} color="inherit" edge="start" aria-label="back">
+            <ArrowBackIcon />
+          </IconButton>
+        )}
         <Typography variant="h6">{title}</Typography>
       </Box>
       {topChildren}
