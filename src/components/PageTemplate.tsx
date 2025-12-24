@@ -1,6 +1,7 @@
 import { Box, Stack, Typography, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import type { PropsWithChildren, ReactNode } from "react";
+import HomeIcon from "@mui/icons-material/Home";
 
 type TemplateProps = {
   title: string;
@@ -24,6 +25,11 @@ export default function PageTemplate({
         {onBack && (
           <IconButton onClick={onBack} color="inherit" edge="start">
             <ArrowBackIcon />
+          </IconButton>
+        )}
+        {!onBack && (
+          <IconButton color="inherit" edge="start" disableRipple>
+            <HomeIcon />
           </IconButton>
         )}
         <Typography variant="h6">{title}</Typography>
