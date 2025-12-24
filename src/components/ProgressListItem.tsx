@@ -1,8 +1,5 @@
-import { Box, LinearProgress, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Box, LinearProgress, ListItem, ListItemText } from "@mui/material";
 import type { ReactNode } from "react";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import PendingIcon from "@mui/icons-material/Pending";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import clamp from "../utils";
 
 type ProgressListItemProps = {
@@ -13,14 +10,16 @@ type ProgressListItemProps = {
   OnListItemClick?: () => void;
 };
 
-function getProgressStatusIcon(progress: number) {
+type ProgressBarColor = "success" | "inherit" | "primary";
+
+function getProgressBarColor(progress: number): ProgressBarColor {
   if (progress >= 100) {
-    return <CheckCircleIcon fontSize="large" color="success" />;
+    return "success";
   }
   if (progress === 0) {
-    return <PendingIcon fontSize="large" color="disabled" />;
+    return "inherit";
   }
-  return <PlayCircleIcon fontSize="large" color="primary" />;
+  return "primary";
 }
 
 export default function ProgressListItem({
@@ -39,7 +38,6 @@ export default function ProgressListItem({
         "&:hover": { backgroundColor: "#f9f9f9" },
       }}
     >
-      <ListItemIcon>{getProgressStatusIcon(progress)}</ListItemIcon>
       <ListItemText
         primary={<Primary headerNode={header} progress={progress} />}
         secondary={footer}
@@ -58,7 +56,7 @@ function Primary({ headerNode, progress }: { headerNode: ReactNode; progress: nu
           <LinearProgress
             variant="determinate"
             value={clamp(progress, 0, 100)}
-            color={progress >= 100 ? "success" : "primary"}
+            color={getProgressBarColor(progress)}
           />
         </Box>
       </Box>
