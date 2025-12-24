@@ -1,13 +1,15 @@
-import { Box, LinearProgress, ListItem, ListItemText } from "@mui/material";
+import { Box, IconButton, LinearProgress, ListItem, ListItemText } from "@mui/material";
 import type { ReactNode } from "react";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 import clamp from "../utils";
 
 type ProgressListItemProps = {
   header: ReactNode;
   footer?: ReactNode;
-  secondaryAction?: ReactNode;
   progress: number;
   OnListItemClick?: () => void;
+  OnMenuClick?: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
 type ProgressBarColor = "success" | "inherit" | "primary";
@@ -25,14 +27,24 @@ function getProgressBarColor(progress: number): ProgressBarColor {
 export default function ProgressListItem({
   header,
   footer,
-  secondaryAction,
   progress,
   OnListItemClick,
+  OnMenuClick,
 }: ProgressListItemProps) {
   return (
     <ListItem
       divider
-      secondaryAction={secondaryAction}
+      secondaryAction={
+        <IconButton
+          edge="end"
+          onClick={(event) => {
+            event.stopPropagation();
+            OnMenuClick?.(event);
+          }}
+        >
+          <MoreVertIcon />
+        </IconButton>
+      }
       onClick={OnListItemClick}
       sx={{
         "&:hover": { backgroundColor: "#f9f9f9" },

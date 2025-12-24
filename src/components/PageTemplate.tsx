@@ -22,7 +22,7 @@ export default function PageTemplate({
     <Box display="flex" flexDirection="column" height="100vh">
       <Box p={2} bgcolor="primary.main" color="white" display="flex" alignItems="center" gap={1}>
         {onBack && (
-          <IconButton onClick={onBack} color="inherit" edge="start" aria-label="back">
+          <IconButton onClick={onBack} color="inherit" edge="start">
             <ArrowBackIcon />
           </IconButton>
         )}

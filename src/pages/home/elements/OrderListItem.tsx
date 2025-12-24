@@ -1,18 +1,22 @@
-import type OrderModel from "../../../models/order.model";
+import { Stack, Typography } from "@mui/material";
+import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import ProgressListItem from "../../../components/ProgressListItem";
-import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../../db";
-import type RecordModel from "../../../models/record.model";
+import type OrderModel from "../../../models/order.model";
 import type PartModel from "../../../models/part.model";
-import { Stack, Typography } from "@mui/material";
+import type RecordModel from "../../../models/record.model";
 import clamp from "../../../utils";
 
 type OrderListItemProps = {
   order: OrderModel;
+  onMenuClick?: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
-export default function OrderListItem({ order }: OrderListItemProps) {
+export default function OrderListItem({
+  order,
+  onMenuClick: onOptionMenuClick,
+}: OrderListItemProps) {
   const navigate = useNavigate();
 
   const parts = useLiveQuery(() => db.parts.where("orderId").equals(order.id).toArray(), []) ?? [];
@@ -36,6 +40,7 @@ export default function OrderListItem({ order }: OrderListItemProps) {
       footer={<Footer order={order} />}
       progress={progress}
       OnListItemClick={() => navigate("/printing-tracker/order/" + order.id)}
+      OnMenuClick={onOptionMenuClick}
     />
   );
 }
@@ -50,7 +55,9 @@ function Header({ order, printingProgress }: { order: OrderModel; printingProgre
 }
 
 function Footer({ order }: { order: OrderModel }) {
-  return (
-    order.dueDate instanceof Date && <Typography>{order.dueDate.toLocaleDateString()}</Typography>
+  return order.dueDate instanceof Date ? (
+    <Typography>{order.dueDate.toLocaleDateString()}</Typography>
+  ) : (
+    <Typography sx={{ minHeight: "1.5em" }}></Typography>
   );
 }
