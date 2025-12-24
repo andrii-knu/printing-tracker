@@ -23,13 +23,8 @@ export default function PartListItem({ part, OnAddClick, OnShowHistoryClick }: P
   return (
     <ProgressListItem
       header={<Header part={part} printed={printed} />}
-      footer={<AddButtonsBar OnAddClick={OnAddClick} />}
+      footer={<AddButtonsBar OnAddClick={OnAddClick} OnShowHistoryClick={OnShowHistoryClick} />}
       progress={printingProgress}
-      secondaryAction={
-        <IconButton edge="end" onClick={OnShowHistoryClick}>
-          <HistoryIcon />
-        </IconButton>
-      }
     />
   );
 }
@@ -43,9 +38,18 @@ function Header({ part, printed }: { part: PartModel; printed: number }) {
   );
 }
 
-function AddButtonsBar({ OnAddClick }: { OnAddClick?: () => void }) {
+function AddButtonsBar({
+  OnAddClick,
+  OnShowHistoryClick,
+}: {
+  OnAddClick?: () => void;
+  OnShowHistoryClick?: () => void;
+}) {
   return (
     <Stack direction="row" spacing={2}>
+      <IconButton onClick={OnShowHistoryClick}>
+        <HistoryIcon />
+      </IconButton>
       <Button
         startIcon={<CalculateIcon />}
         size="small"
