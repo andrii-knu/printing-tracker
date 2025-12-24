@@ -1,17 +1,13 @@
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-type OrderMenuOptionsProps = {
+type MenuOptionsProps = {
   anchor: null | HTMLElement;
   onDeleteClick: () => void;
   onClose: () => void;
 };
 
-export default function OrderMenuOptions({
-  anchor,
-  onDeleteClick,
-  onClose,
-}: OrderMenuOptionsProps) {
+export default function MenuOptions({ anchor, onDeleteClick, onClose }: MenuOptionsProps) {
   const isOpen = Boolean(anchor);
   return (
     <Menu
