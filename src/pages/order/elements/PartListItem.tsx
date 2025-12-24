@@ -11,9 +11,15 @@ type PartListItemProps = {
   part: PartModel;
   OnAddClick?: () => void;
   OnShowHistoryClick?: () => void;
+  onMenuClick?: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
-export default function PartListItem({ part, OnAddClick, OnShowHistoryClick }: PartListItemProps) {
+export default function PartListItem({
+  part,
+  OnAddClick,
+  OnShowHistoryClick,
+  onMenuClick,
+}: PartListItemProps) {
   const records =
     useLiveQuery(() => db.records.where("partId").equals(part.id).toArray(), []) ?? [];
 
@@ -25,6 +31,7 @@ export default function PartListItem({ part, OnAddClick, OnShowHistoryClick }: P
       header={<Header part={part} printed={printed} />}
       footer={<AddButtonsBar OnAddClick={OnAddClick} OnShowHistoryClick={OnShowHistoryClick} />}
       progress={printingProgress}
+      OnMenuClick={onMenuClick}
     />
   );
 }

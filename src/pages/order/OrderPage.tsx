@@ -12,6 +12,7 @@ import AddPartForm from "./elements/dialogForms/AddPartForm";
 import AddRecordForm from "./elements/dialogForms/AddRecordForm";
 import PartListItem from "./elements/PartListItem";
 import HistoryDialog from "./elements/HistoryDialog";
+import MenuOptions from "../../components/MenuOptions";
 
 export default function OrderPage() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function OrderPage() {
     isOpen: boolean;
     part: PartModel | null;
   }>({ isOpen: false, part: null });
+  const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
 
   const selectedPartRef = useRef<PartModel>(null);
   const { order_id } = useParams();
@@ -58,6 +60,25 @@ export default function OrderPage() {
     }
   };
 
+  const handleDeletePart = async (part: PartModel) => {
+    setAnchorMenu(null);
+    try {
+      const recordsToDelete = await db.records.where("partId").equals(part.id).toArray();
+
+      await db.parts.delete(part.id!);
+      for (const record of recordsToDelete) {
+        await db.records.delete(record.id);
+      }
+    } catch (error) {
+      console.error(`Failed to delete order ${order.title} (ID: ${order.id}):`, error);
+    }
+  };
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, part: PartModel) => {
+    selectedPartRef.current = part;
+    setAnchorMenu(event.currentTarget);
+  };
+
   return (
     <>
       <PageTemplate
@@ -84,6 +105,7 @@ export default function OrderPage() {
               OnShowHistoryClick={() => {
                 setHistoryDialogState({ isOpen: true, part: part });
               }}
+              onMenuClick={(event) => handleMenuClick(event, part)}
             />
           ))}
         </List>
@@ -111,6 +133,12 @@ export default function OrderPage() {
         isOpen={historyDialogState.isOpen}
         onClose={() => setHistoryDialogState((prev) => ({ ...prev, isOpen: false }))}
         part={historyDialogState.part}
+      />
+
+      <MenuOptions
+        anchor={anchorMenu}
+        onDeleteClick={() => handleDeletePart(selectedPartRef.current!)}
+        onClose={() => setAnchorMenu(null)}
       />
     </>
   );

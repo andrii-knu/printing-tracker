@@ -8,7 +8,7 @@ import type OrderModel from "../../models/order.model";
 import AddOrderForm from "./elements/AddOrderForm";
 import AddButton from "../../components/AddButton";
 import OrderListItem from "./elements/OrderListItem";
-import OrderMenuOptions from "./elements/OrderMenuOptions";
+import MenuOptions from "../../components/MenuOptions";
 
 export default function HomePage() {
   const [isOpenAddOrderDialog, setIsOpenAddOrderDialog] = useState(false);
@@ -37,6 +37,7 @@ export default function HomePage() {
   };
 
   const handleDeleteOrder = async (order: OrderModel) => {
+    setAnchorMenu(null);
     try {
       const partsToDelete = await db.parts.where("orderId").equals(order.id).toArray();
       const recordsToDelete = await db.records
@@ -53,7 +54,6 @@ export default function HomePage() {
     } catch (error) {
       console.error(`Failed to delete order ${order.title} (ID: ${order.id}):`, error);
     }
-    setAnchorMenu(null);
   };
 
   return (
@@ -85,7 +85,7 @@ export default function HomePage() {
         <AddOrderForm />
       </AddDialog>
 
-      <OrderMenuOptions
+      <MenuOptions
         anchor={anchorMenu}
         onDeleteClick={() => handleDeleteOrder(selectedOrderRef.current!)}
         onClose={() => setAnchorMenu(null)}

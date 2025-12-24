@@ -13,10 +13,7 @@ type OrderListItemProps = {
   onMenuClick?: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
-export default function OrderListItem({
-  order,
-  onMenuClick: onOptionMenuClick,
-}: OrderListItemProps) {
+export default function OrderListItem({ order, onMenuClick }: OrderListItemProps) {
   const navigate = useNavigate();
 
   const parts = useLiveQuery(() => db.parts.where("orderId").equals(order.id).toArray(), []) ?? [];
@@ -40,7 +37,7 @@ export default function OrderListItem({
       footer={<Footer order={order} />}
       progress={progress}
       OnListItemClick={() => navigate("/printing-tracker/order/" + order.id)}
-      OnMenuClick={onOptionMenuClick}
+      OnMenuClick={onMenuClick}
     />
   );
 }
